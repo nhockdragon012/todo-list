@@ -1,0 +1,111 @@
+#App {
+    
+}
+:root {
+    --bg-box : #232635;
+    --bg-body: #373747;
+    --color: #fff;
+}
+div {
+    display: block;
+    box-sizing: border-box;
+}
+.todo-list {
+    text-align: center;
+    margin: auto;
+    margin-top: 30px;
+    width: 500px;
+    height: auto;
+    min-height: 500px;
+    background: var(--bg-body);
+    border-radius: 20px;
+    padding: 20px;
+    color: var(--color)
+}
+input.input-job {
+    color: #cf0bcf;
+    outline: none;
+    height: 36px;
+    border: 2px solid #df1ddf;
+    padding: 0 20px;
+    width: 300px;
+    box-sizing: border-box;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background: var(--bg-body);
+    transition: all .5s ease;
+}  
+input.input-job::placeholder {
+    color: #cf0bcf;
+}
+input.input-job:focus {
+    background: var(--bg-box);
+
+}
+
+button.submit {
+    height: 36px;
+    background: #df1ddf;
+    outline: none;
+    border: none;
+    color: var(--color);
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    cursor: pointer;
+}
+ul.list-job {
+    list-style: none;
+    width: 90%;
+    padding: 0;
+    margin: auto;
+}
+li.job-item {
+    background: #df1ddf;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-top: 15px;
+    border-radius: 10px;
+}
+p.title {
+    width: calc(100% - 24px);
+    text-transform: capitalize;
+}
+img.icon-delelte, img.icon-note {
+    height: 24px;
+    width: 24px;
+    filter: invert(100%) sepia(0%) saturate(7465%) hue-rotate(146deg) brightness(116%) contrast(104%);
+    cursor: pointer;
+}
+img.icon-delelte {
+    margin-right: 10px;
+}
+
+input.input-edit-title {
+    width: 100%;
+    outline: none;
+    border: none;
+    background: transparent;
+    color: var(--color);
+    text-align: center;
+    border-bottom: 1px solid #fff;
+    margin: 0 20px;
+    
+}
+
+@media screen and (max-width: 768px){
+    .todo-list {
+        width: 100%;
+    }
+    button.submit {
+        width: 30%;
+        float: right;
+    }
+    input.input-job {
+        width: 70%;
+        float: left;
+    }
+
+}
