@@ -1,110 +1,21 @@
-import {useEffect, useReducer, useRef} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import './App.css'
 import deleteIcon from './assets/delete.png'
 import noteIcon from './assets/note.png'
 import check from './assets/check.png'
-
-//import reducer
-// import reducer, {initState} from './Components/reducer'
-// import {setJob, addJob, delJob, editJob, isEditJob} from './Components/actions'
+import {useSelector, useDispatch} from 'react-redux'
+import {setJob, addJob, delJob, editJob, setEditInput} from './Redux/actions'
 
 function App() {
-  const handleJSON = () => JSON.parse(localStorage.getItem('jobs'))
-  const initState = {
-    input: '',
-    jobs: handleJSON() ?? [],
-    isEdit: false,
-    isIndex: ''
-  }
-  const SET_JOB = 'SET_JOB';
-  const ADD_JOB = 'ADD_JOB';
-  const DEL_JOB = 'DEL_JOB';
-  const EDIT_JOB = 'EDIT_JOB';
-  const IS_EDIT = 'IS_EDIT';
 
-  const setJob = payload => {
-    return {
-      type: SET_JOB,
-      payload
-    }
-  }
-  const addJob = payload => {
-    return {
-      type: ADD_JOB,
-      payload
-    }
-  }
-  const delJob = index => {
-    return {
-      type: DEL_JOB,
-      index
-    }
-  }
-  const editJob = (payload, index) => {
-    const newJobs = [...state.jobs]
-    newJobs[index] = payload
-    return {
-      type: EDIT_JOB,
-      newJobs
-    }
-  }
-  const isEditJob = (target, index) => {
-    if(index === Number(target.parentNode.dataset.index) && state.jobs[index] !== '') {
-      state.isEdit = !state.isEdit
-      state.isIndex = index
-    }
-    if(state.jobs[index] === ''){
-      alert('Sửa lại công việc không được để trống')
-    }
-    return {
-      type: IS_EDIT,
-      index
-    }
-  }
-  const reducer = (state, action) => {
-    let newState;
-    switch (action.type) {
-      case SET_JOB:
-        newState = {
-          ...state,
-          input: action.payload
-        }
-      break;
-      case ADD_JOB:
-        newState = {
-          ...state,
-          jobs: [...state.jobs, action.payload]
-        }
-      break;
-      case DEL_JOB:
-        const newJobs = [...state.jobs]
-        newJobs.splice(action.index, 1)
-        newState = {
-          ...state,
-          jobs: newJobs
-        }
-      break;
-      case EDIT_JOB:
-        newState = {
-          ...state,
-          jobs: action.newJobs
-        }
-      break;
-      case IS_EDIT:
-        newState = {
-          ...state
-        }
-      break
-      default:
-        throw new Error('Invalid Action')
-    }
-    return newState
-  }
-  const [state, dispatch] = useReducer(reducer, initState)
-
-  const {input, jobs, isIndex, isEdit} = state
+  const {input, jobs, editInput} = useSelector(state => ({
+    input: state.input,
+    jobs: state.jobs,
+    editInput: state.editInput
+  }))
+  const dispatch = useDispatch()
   const inputRef = useRef()
-
+  
   //Handle
   const handleSubmit = () => {
     if(input){
@@ -113,18 +24,12 @@ function App() {
       inputRef.current.focus()
     }
   }
-  const handleEditJob = (target, index) => {
-    dispatch(isEditJob(target, index))
-  }
+
   // Delay Handle
   useEffect(() => {
-    isEdit && document.querySelector('.input-edit-title').focus()
-  },[isEdit])
-  useEffect(() => {
-    const jobsJSON = JSON.stringify([...jobs])
-    localStorage.setItem('jobs', jobsJSON)
-  },[jobs])
-  
+    editInput.edit && document.querySelector('.input-edit-title').focus()
+  },[editInput.edit])
+
   return (
     <div id="App">
       <div className="todo-list">
@@ -140,7 +45,7 @@ function App() {
         <ul className="list-job">
           {jobs && jobs.length > 0 && jobs.map((job, i) => {
             return <li className="job-item" key={i} data-index={i}>
-                {isEdit && i === isIndex
+                {editInput.edit && i === editInput.index
                   ? <input 
                       className="input-edit-title"
                       value={job}
@@ -155,10 +60,10 @@ function App() {
                   onClick={() => dispatch(delJob(i))}
                 ></img>
                 <img 
-                  src={isEdit && i === isIndex ? check  : noteIcon} 
+                  src={editInput.edit && i === editInput.index ? check  : noteIcon} 
                   className="icon-note" 
                   alt="note.png"
-                  onClick={(e) => handleEditJob(e.target, i)}
+                  onClick={() => dispatch(setEditInput(!editInput.edit, i))}
                 ></img>
             </li>
           })}
@@ -167,5 +72,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
